@@ -1,0 +1,45 @@
+stages:
+  - build
+  - test
+  - deploy
+
+# Example: Build React frontend
+build_frontend:
+  stage: build
+  image: node:18-alpine
+  script:
+    - cd basic-app/frontend
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - basic-app/frontend/build
+
+# Example: Build Node.js backend
+build_backend:
+  stage: build
+  image: node:18-alpine
+  script:
+    - cd basic-app/backend
+    - npm install
+
+# Deployment to remote VM via SSH
+deploy:
+  stage: deploy
+  image: alpine:latest
+  only:
+    - master  # or `main` if you're using that
+  before_script:
+    - apk add --no-cache openssh git
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOY_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H 3.6.39.159 >> ~/.ssh/known_hosts
+  script:
+    - echo "Deploying to remote server"
+    - ssh ubuntu@3.6.39.159 '
+        cd /home/ubuntu/docker-container &&
+        git pull &&
+        docker-compose down &&
+        docker-compose up --build -d
+      '
