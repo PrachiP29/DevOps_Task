@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-# Example: Build React frontend
+# Build React frontend
 build_frontend:
   stage: build
   image: node:18-alpine
@@ -15,7 +15,7 @@ build_frontend:
     paths:
       - basic-app/frontend/build
 
-# Example: Build Node.js backend
+# Build Node.js backend
 build_backend:
   stage: build
   image: node:18-alpine
@@ -24,9 +24,6 @@ build_backend:
     - npm install
 
 # Deployment to remote VM via SSH
-stages:
-  - deploy
-
 deploy_to_ec2:
   stage: deploy
   image: alpine:latest  # A lightweight Docker image
@@ -45,4 +42,3 @@ deploy_to_ec2:
         docker-compose down &&
         docker-compose up --build -d
       '
-
