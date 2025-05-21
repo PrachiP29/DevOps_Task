@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  frontend:
+    build:
+      context: ./basic-app/frontend
+    networks:
+      - app-network
+    # No need to expose a port for the frontend since it's handled by Nginx
+
+  backend:
+    build:
+      context: ./basic-app/backend
+    ports:
+      - "5001:5000"  # Exposing backend to host on port 5001
+    networks:
+      - app-network
+    # Exposing port internally to be 5000, so Nginx can access it via "backend:5000"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"  # Exposing Nginx to host on port 80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf  # Mounting Nginx configuration file
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+    # Ensures Nginx waits for the frontend and backend containers to be ready
+
+networks:
+  app-network:
+    driver: bridge
