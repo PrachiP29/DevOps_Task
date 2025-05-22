@@ -24,7 +24,7 @@ build_backend:
     - npm install
 
 # Deployment to remote VM via SSH
-deploy_to_ec2:
+ddeploy_to_ec2:
   stage: deploy
   image: alpine:latest
   only:
@@ -39,6 +39,6 @@ deploy_to_ec2:
     - ssh -o StrictHostKeyChecking=no ubuntu@3.6.39.159 '
         cd /home/ubuntu/docker-container &&
         git pull &&
-        docker-compose down &&
-        docker-compose up --build -d
+        sudo docker-compose down &&
+        sudo docker-compose up --build -d
       '
