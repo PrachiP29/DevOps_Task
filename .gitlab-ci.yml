@@ -26,7 +26,7 @@ build_backend:
 # Deployment to remote VM via SSH
 deploy_to_ec2:
   stage: deploy
-  image: alpine:latest  # A lightweight Docker image
+  image: alpine:latest
   only:
     - master
   script:
